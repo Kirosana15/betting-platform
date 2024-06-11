@@ -1,13 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import puppeteer, { Browser } from 'puppeteer';
 import { DateTime } from 'luxon';
+import { IDataProvider } from '../interfaces/baseDataProvider.interface';
+import { EventDataRaw } from '../interfaces/odds.interface';
 
 @Injectable()
-export class FlashscoreProviderService {
-  async getTodaysOdds() {
+export class FlashscoreProviderService implements IDataProvider {
+  async getTodaysOdds(): Promise<EventDataRaw[]> {
     const browser = await puppeteer.launch();
     const todaysMatches = await this.getTodaysMatches(browser);
-    const todaysOdds = [];
+    const todaysOdds = new Array<EventDataRaw>();
     const l = todaysMatches.length;
     for (const match of todaysMatches) {
       const odds = await this.getOddsForMatch(browser, match);
@@ -25,7 +27,7 @@ export class FlashscoreProviderService {
     return todaysOdds;
   }
 
-  async getOddsForMatch(browser: Browser, url: string) {
+  async getOddsForMatch(browser: Browser, url: string): Promise<EventDataRaw> {
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
 
@@ -92,7 +94,7 @@ export class FlashscoreProviderService {
     return { leagueName, startTimestamp, homeName, awayName, odds };
   }
 
-  async getTodaysMatches(browser: Browser) {
+  async getTodaysMatches(browser: Browser): Promise<string[]> {
     const page = await browser.newPage();
     await page.goto('https://www.flashscore.pl', {
       waitUntil: 'networkidle2',
