@@ -1,8 +1,26 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+model League {
+  id    String  @id @default(uuid())
+  name  String
+  events Event[]
+}
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+model Team {
+  id   String @id @default(uuid())
+  name String
+  games_home Event[] @relation("games_home")
+  games_away Event[] @relation("games_away")
+}
+
+model Event {
+  id        String @id @default(uuid())
+  league_id String
+  league    League @relation(fields: [league_id], references: [id])
+  home_team_id String
+  home_team Team @relation("games_home", fields: [home_team_id], references: [id])
+  away_team_id String
+  away_team Team @relation("games_away", fields: [away_team_id], references: [id])
+  event_date DateTime
+}
 
 generator client {
   provider = "prisma-client-js"
