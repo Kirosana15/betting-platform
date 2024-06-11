@@ -20,6 +20,25 @@ model Event {
   away_team_id String
   away_team Team @relation("games_away", fields: [away_team_id], references: [id])
   event_date DateTime
+  odds BetOdds[]
+}
+
+model Bookmaker {
+  id        String @id @default(uuid())
+  name String
+  odds BetOdds[]
+}
+
+model BetOdds {
+  id String @id @default(uuid())
+  event_id String
+  event Event  @relation(fields: [event_id], references: [id])
+  bookmaker_id String
+  bookmaker Bookmaker  @relation(fields: [bookmaker_id], references: [id])
+  home_win_odds Float
+  draw_odds Float
+  away_win_odds Float
+  timestamp Int
 }
 
 generator client {
