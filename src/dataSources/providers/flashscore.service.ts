@@ -43,7 +43,7 @@ export class FlashscoreProviderService implements IDataProvider {
     const startTimestamp = startDate.toUnixInteger();
 
     //skip event if it already begun
-    if (startDate <= DateTime.now() && false) {
+    if (startDate <= DateTime.now()) {
       await page.close();
       return;
     }
