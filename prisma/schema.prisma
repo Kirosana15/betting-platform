@@ -1,46 +1,46 @@
 model League {
-  id    String  @id @default(uuid())
-  name  String @unique
+  id     String  @id @default(uuid())
+  name   String  @unique
   events Event[]
 }
 
 model Team {
-  id   String @id @default(uuid())
-  name String @unique
+  id         String  @id @default(uuid())
+  name       String  @unique
   games_home Event[] @relation("games_home")
   games_away Event[] @relation("games_away")
 }
 
 model Event {
-  id        String @id @default(uuid())
-  league_id String
-  league    League @relation(fields: [league_id], references: [id])
+  id           String    @id @default(uuid())
+  league_id    String
+  league       League    @relation(fields: [league_id], references: [id])
   home_team_id String
-  home_team Team @relation("games_home", fields: [home_team_id], references: [id])
+  home_team    Team      @relation("games_home", fields: [home_team_id], references: [id])
   away_team_id String
-  away_team Team @relation("games_away", fields: [away_team_id], references: [id])
-  event_date DateTime
-  odds BetOdds[]
+  away_team    Team      @relation("games_away", fields: [away_team_id], references: [id])
+  event_date   DateTime
+  odds         BetOdds[]
 
   @@unique([league_id, home_team_id, away_team_id, event_date])
 }
 
 model Bookmaker {
-  id        String @id @default(uuid())
-  name String @unique
+  id   String    @id @default(uuid())
+  name String    @unique
   odds BetOdds[]
 }
 
 model BetOdds {
-  id String @id @default(uuid())
-  event_id String
-  event Event  @relation(fields: [event_id], references: [id])
-  bookmaker_id String
-  bookmaker Bookmaker  @relation(fields: [bookmaker_id], references: [id])
+  id            String    @id @default(uuid())
+  event_id      String
+  event         Event     @relation(fields: [event_id], references: [id])
+  bookmaker_id  String
+  bookmaker     Bookmaker @relation(fields: [bookmaker_id], references: [id])
   home_win_odds Float
-  draw_odds Float
+  draw_odds     Float
   away_win_odds Float
-  timestamp Int
+  timestamp     DateTime  @default(now())
 
   @@unique([bookmaker_id, event_id, timestamp])
 }
