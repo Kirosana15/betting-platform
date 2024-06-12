@@ -3,33 +3,33 @@ import puppeteer, { Browser } from 'puppeteer';
 import { DateTime } from 'luxon';
 import { IDataProvider } from '../interfaces/baseDataProvider.interface';
 import { EventDataRaw } from '../interfaces/odds.interface';
+import * as rxjs from 'rxjs';
+import { mergeMap, Observable } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FlashscoreProviderService implements IDataProvider {
-  async getTodaysOdds(): Promise<EventDataRaw[]> {
+  private _CONCURRENCY: number;
+  constructor() {
+    this._CONCURRENCY = parseInt(process.env.FLASHSCORE_CONCURRENCY || '3', 10);
+  }
+
+  async getTodaysOdds(): Promise<Observable<EventDataRaw>> {
     const browser = await puppeteer.launch();
     const todaysMatches = await this.getTodaysMatches(browser);
-    const todaysOdds = new Array<EventDataRaw>();
-    const l = todaysMatches.length;
-    for (const match of todaysMatches) {
-      const odds = await this.getOddsForMatch(browser, match);
-      if (!odds) {
-        Logger.verbose(`Skipped ${match}`);
-      } else {
-        Logger.verbose(
-          `Got match ${todaysOdds.length + 1} of ${l} | ${odds.leagueName} | ${
-            odds.homeName
-          } - ${odds.awayName}`,
-        );
-        todaysOdds.push(odds);
-      }
-    }
-    return todaysOdds;
+
+    const observable = rxjs.from(todaysMatches).pipe(
+      mergeMap(async (match) => {
+        return this.getOddsForMatch(browser, match);
+      }, this._CONCURRENCY),
+      rxjs.finalize(() => browser.close()),
+    );
+    return observable;
   }
 
   async getOddsForMatch(browser: Browser, url: string): Promise<EventDataRaw> {
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle2' });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 0 });
 
     //get event date
     const startDateText = await page.$eval(
@@ -43,7 +43,8 @@ export class FlashscoreProviderService implements IDataProvider {
     const startTimestamp = startDate.toUnixInteger();
 
     //skip event if it already begun
-    if (startDate <= DateTime.now()) {
+    if (startDate <= DateTime.now() && false) {
+      await page.close();
       return;
     }
 

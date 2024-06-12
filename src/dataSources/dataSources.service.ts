@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { Injectable } from '@nestjs/common';
 import { FlashscoreProviderService } from './providers/flashscore.service';
 import { IDataProvider } from './interfaces/baseDataProvider.interface';
@@ -11,7 +12,9 @@ export class DataSourcesService {
     this.providers.set(DataProviders.FlashscoreProvider, flashscoreService);
   }
 
-  async getProviderData(provider: DataProviders): Promise<EventDataRaw[]> {
+  async getProviderData(
+    provider: DataProviders,
+  ): Promise<Observable<EventDataRaw>> {
     const providerService = this.providers.get(provider);
     return providerService.getTodaysOdds();
   }
