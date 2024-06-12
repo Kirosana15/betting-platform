@@ -1,12 +1,12 @@
 model League {
   id    String  @id @default(uuid())
-  name  String
+  name  String @unique
   events Event[]
 }
 
 model Team {
   id   String @id @default(uuid())
-  name String
+  name String @unique
   games_home Event[] @relation("games_home")
   games_away Event[] @relation("games_away")
 }
@@ -21,11 +21,13 @@ model Event {
   away_team Team @relation("games_away", fields: [away_team_id], references: [id])
   event_date DateTime
   odds BetOdds[]
+
+  @@unique([league_id, home_team_id, away_team_id, event_date])
 }
 
 model Bookmaker {
   id        String @id @default(uuid())
-  name String
+  name String @unique
   odds BetOdds[]
 }
 
@@ -39,6 +41,8 @@ model BetOdds {
   draw_odds Float
   away_win_odds Float
   timestamp Int
+
+  @@unique([bookmaker_id, event_id, timestamp])
 }
 
 generator client {
