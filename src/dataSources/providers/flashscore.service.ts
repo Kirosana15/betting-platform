@@ -40,7 +40,7 @@ export class FlashscoreProviderService implements IDataProvider {
       startDateText,
       'dd.MM.yyyy HH:mm',
     ).setZone('Europe/Warsaw');
-    const startTimestamp = startDate.toUnixInteger();
+    const startTimestamp = startDate.toMillis();
 
     //skip event if it already begun
     if (startDate <= DateTime.now()) {
