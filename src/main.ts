@@ -8,7 +8,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   await app.listen(PORT);
   Logger.log(`Listening on port: ${PORT}`);
-  const schedulerService = app.get<SchedulerService>(SchedulerService);
-  schedulerService.getFlashscoreData();
+  const runFlashscoreOnInit = process.env.FLASHSCORE_RUN_ON_INIT === 'true';
+  if (runFlashscoreOnInit) {
+    const schedulerService = app.get<SchedulerService>(SchedulerService);
+    schedulerService.getFlashscoreData();
+  }
 }
 bootstrap();
