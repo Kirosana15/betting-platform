@@ -4,6 +4,7 @@ import {
   EventDataRaw,
   OddsDataRaw,
 } from 'src/dataSources/interfaces/odds.interface';
+import { GetTodaysOddsSelectQuery } from './queries/odds.queries';
 
 @Injectable()
 export class OddsRepositoryService {
@@ -87,5 +88,17 @@ export class OddsRepositoryService {
     });
 
     return Promise.all(odds);
+  }
+
+  async getTodaysOdds(leagueName?: string) {
+    return this.prismaService.event.findMany({
+      where: {
+        AND: {
+          league: { name: leagueName },
+          event_date: { lt: new Date() },
+        },
+      },
+      select: GetTodaysOddsSelectQuery,
+    });
   }
 }
