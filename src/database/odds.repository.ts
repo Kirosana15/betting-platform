@@ -101,4 +101,8 @@ export class OddsRepositoryService {
       select: GetTodaysOddsSelectQuery,
     });
   }
+
+  async getManyOdds(odds: string[]) {
+    return this.prismaService.betOdds.findMany({ where: { id: { in: odds } } });
+  }
 }
