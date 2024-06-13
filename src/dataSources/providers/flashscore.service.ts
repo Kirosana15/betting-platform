@@ -5,13 +5,14 @@ import { IDataProvider } from '../interfaces/baseDataProvider.interface';
 import { EventDataRaw } from '../interfaces/odds.interface';
 import * as rxjs from 'rxjs';
 import { mergeMap, Observable } from 'rxjs';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FlashscoreProviderService implements IDataProvider {
   private _CONCURRENCY: number;
+  private _LINK: string;
   constructor() {
     this._CONCURRENCY = parseInt(process.env.FLASHSCORE_CONCURRENCY || '3', 10);
+    this._LINK = process.env.FLASHSCORE_LINK || 'https://www.flashscore.pl';
   }
 
   async getTodaysOdds(): Promise<Observable<EventDataRaw>> {
@@ -97,7 +98,7 @@ export class FlashscoreProviderService implements IDataProvider {
 
   async getTodaysMatches(browser: Browser): Promise<string[]> {
     const page = await browser.newPage();
-    await page.goto('https://www.flashscore.pl', {
+    await page.goto(this._LINK, {
       waitUntil: 'networkidle2',
     });
 
