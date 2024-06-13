@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DataSourcesModule } from './dataSources/dataSources.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { OddsModule } from './odds/odds.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
     DataSourcesModule,
     ScheduleModule.forRoot(),
     SchedulerModule,
+    OddsModule,
   ],
 })
 export class AppModule {}
