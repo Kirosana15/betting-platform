@@ -10,9 +10,9 @@ export class OddsService {
   }
 
   async calculateBet(
-    homeBets: string[],
-    drawBets: string[],
-    awayBets: string[],
+    homeBets: string[] = [],
+    drawBets: string[] = [],
+    awayBets: string[] = [],
   ) {
     const allBets = [...homeBets, ...drawBets, ...awayBets];
     if (allBets.length === 0) {
@@ -21,12 +21,14 @@ export class OddsService {
 
     const odds = await this.oddsRepository.getManyOdds(allBets);
 
-    const bookmakers = new Set(odds.map((odd) => odd.bookmaker_id));
+    const bookmakers = new Set(odds.map((odd) => odd.bookmaker.id));
     if (bookmakers.size > 1) {
       throw new BadRequestException(
         'Please select bets from a single bookmaker',
       );
     }
+
+    const bookmaker = odds[0].bookmaker.name;
 
     const homeOdds = homeBets.map(
       (id) => odds.find((odd) => odd.id === id).home_win_odds,
@@ -41,6 +43,6 @@ export class OddsService {
 
     const totalOdds = allOdds.reduce((product, odd) => product * odd, 1);
 
-    return { totalOdds };
+    return { bookmaker, totalOdds };
   }
 }

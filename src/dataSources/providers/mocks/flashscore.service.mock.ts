@@ -4,7 +4,7 @@ import * as rxjs from 'rxjs';
 import { Observable, mergeMap } from 'rxjs';
 
 export const flashscoreProviderMock = {
-  getTodays: jest.fn((): Promise<Observable<EventDataRaw>> => {
+  getTodaysOdds: jest.fn((): Promise<Observable<EventDataRaw>> => {
     return Promise.resolve(
       rxjs.from([
         {
