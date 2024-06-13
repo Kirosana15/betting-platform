@@ -4,6 +4,9 @@ import { DataSourcesService } from 'src/dataSources/dataSources.service';
 import { DataProviders } from 'src/dataSources/enums/providers.enum';
 import { OddsRepositoryService } from 'src/database/odds.repository';
 
+const _FLASHSCORE_SCHEDULE =
+  process.env.FLASHSCORE_SCHEDULE || CronExpression.EVERY_30_MINUTES;
+
 @Injectable()
 export class SchedulerService {
   constructor(
@@ -11,7 +14,7 @@ export class SchedulerService {
     private readonly dataSources: DataSourcesService,
   ) {}
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(_FLASHSCORE_SCHEDULE)
   async getFlashscoreData() {
     const observable = await this.dataSources.getProviderData(
       DataProviders.FlashscoreProvider,
