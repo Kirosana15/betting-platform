@@ -103,6 +103,9 @@ export class OddsRepositoryService {
   }
 
   async getManyOdds(odds: string[]) {
-    return this.prismaService.betOdds.findMany({ where: { id: { in: odds } } });
+    return this.prismaService.betOdds.findMany({
+      where: { id: { in: odds } },
+      include: { bookmaker: true },
+    });
   }
 }

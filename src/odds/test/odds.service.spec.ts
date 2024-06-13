@@ -77,6 +77,10 @@ describe('Odds service', () => {
           id: homeBets[0],
           event_id: '92382e7e-1b0d-4e2f-8d57-e92be22b8dde',
           bookmaker_id: '92382e7e-1b0d-4e2f-8d57-e92be22b8dde',
+          bookmaker: {
+            id: '92382e7e-1b0d-4e2f-8d57-e92be22b8dde',
+            name: 'test1',
+          },
           home_win_odds: 1,
           draw_odds: 2,
           away_win_odds: 3,
@@ -86,6 +90,10 @@ describe('Odds service', () => {
           id: homeBets[1],
           event_id: '92382e7e-1b0d-4e2f-8d57-e92be22b8dde',
           bookmaker_id: '675cdd23-b993-4514-84c6-d14d032cad99',
+          bookmaker: {
+            id: '675cdd23-b993-4514-84c6-d14d032cad99',
+            name: 'test2',
+          },
           home_win_odds: 1,
           draw_odds: 2,
           away_win_odds: 3,
@@ -105,6 +113,15 @@ describe('Odds service', () => {
         awayBets,
       );
       expect(totalOdds).toBe(expectedProduct);
+    });
+
+    it('should return bookmaker', async () => {
+      const { bookmaker } = await oddsService.calculateBet(
+        homeBets,
+        drawBets,
+        awayBets,
+      );
+      expect(bookmaker).toBe('testBookmaker');
     });
   });
 });
