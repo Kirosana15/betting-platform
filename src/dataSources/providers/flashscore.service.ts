@@ -29,8 +29,8 @@ export class FlashscoreProviderService implements IDataProvider {
 
   async getOddsForMatch(browser: Browser, url: string): Promise<EventDataRaw> {
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 0 });
-
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.duelParticipant__startTime > div');
     //get event date
     const startDateText = await page.$eval(
       '.duelParticipant__startTime > div',
