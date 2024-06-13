@@ -10,9 +10,9 @@ export class OddsService {
   }
 
   async calculateBet(
-    homeBets: string[],
-    drawBets: string[],
-    awayBets: string[],
+    homeBets: string[] = [],
+    drawBets: string[] = [],
+    awayBets: string[] = [],
   ) {
     const allBets = [...homeBets, ...drawBets, ...awayBets];
     if (allBets.length === 0) {

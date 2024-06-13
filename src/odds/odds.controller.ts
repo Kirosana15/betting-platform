@@ -15,7 +15,7 @@ export class OddsController {
 
   @Get('bet')
   async calculateBet(@Query() query: CalculateBetQueryDto) {
-    const { homeBets = [], drawBets = [], awayBets = [] } = query;
+    const { homeBets, drawBets, awayBets } = query;
     return this.service.calculateBet(homeBets, drawBets, awayBets);
   }
 }
