@@ -6,8 +6,8 @@ import { SchedulerService } from './scheduler/scheduler.service';
 async function bootstrap() {
   const PORT = parseInt(process.env.PORT || '3000', 10);
   const app = await NestFactory.create(AppModule);
-  await app.listen(PORT);
   app.useGlobalPipes(new ValidationPipe());
+  await app.listen(PORT);
 
   const runFlashscoreOnInit = process.env.FLASHSCORE_RUN_ON_INIT === 'true';
   if (runFlashscoreOnInit) {
