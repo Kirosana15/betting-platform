@@ -19,12 +19,12 @@ services:
     container_name: betting-platform
     environment:
       - PORT=${PORT}
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres?schema=public
       - FLASHSCORE_CONCURRENCY=${FLASHSCORE_CONCURRENCY}
       - FLASHSCORE_SCHEDULE=${FLASHSCORE_SCHEDULE}
       - FLASHSCORE_RUN_ON_INIT=${FLASHSCORE_RUN_ON_INIT}
     ports:
-      - '3000:3000'
+      - '${PORT}:${PORT}'
     depends_on:
       - db
     volumes:

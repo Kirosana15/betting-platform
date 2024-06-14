@@ -16,7 +16,9 @@ export class FlashscoreProviderService implements IDataProvider {
   }
 
   async getTodaysOdds(): Promise<Observable<EventDataRaw>> {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     const todaysMatches = await this.getTodaysMatches(browser);
 
     const observable = rxjs.from(todaysMatches).pipe(
